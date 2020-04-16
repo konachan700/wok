@@ -1,0 +1,20 @@
+FROM debian-kimchi
+
+RUN apt install -y sudo && mkdir /data && pip3 install distro ethtool
+
+WORKDIR /data
+RUN git clone --recursive https://github.com/kimchi-project/wok.git
+
+WORKDIR /data/wok
+RUN pip3 install -r requirements-dev.txt
+RUN git submodule update --remote
+RUN chmod +x /data/wok/build-all.sh && /data/wok/build-all.sh
+
+RUN systemctl enable wokd.service
+
+RUN sed -i "/pam_securetty.so/"' s/^/#/' "/etc/pam.d/login"
+RUN echo 'root:start777' | chpasswd
+
+EXPOSE 8001
+
+CMD ["/sbin/init"]

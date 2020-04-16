@@ -21,7 +21,7 @@
 
 function build {
     sudo make clean
-    sudo ./autogen.sh --system && sudo make
+    sudo ./autogen.sh --system && sudo make && sudo make install
     rc=$?
     if [[ $rc != 0 ]]; then
         echo "Exiting..."
